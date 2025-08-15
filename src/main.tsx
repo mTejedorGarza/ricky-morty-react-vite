@@ -3,7 +3,7 @@ import './index.css'
 import App from './App.tsx'
 import { Provider } from 'react-redux'
 import React from 'react'
-import { store } from './services/state/ricky-morty-store.ts'
+import { store } from './services/state/ricky-morty-store'
 
 createRoot(document.getElementById('root')!).render(
       <React.StrictMode>
