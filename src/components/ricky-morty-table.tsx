@@ -1,40 +1,27 @@
 // src/components/RickMortyTable/RickMortyTable.tsx
-import React, { useEffect, useState } from 'react';
-import type { Character } from '../types/api-response-character';
-import { RickMortyCard } from '../components/ricky-morty-character-card';
-import type { HandleCharactersResponse } from '../types/api-response';
-import { rickAndMortyService } from '../services/ricky-morty-service';
-import { Subscription } from 'rxjs';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState, AppDispatch } from '../services/state/ricky-morty-store';
+import { loadCharacters,nextPage,prevPage } from '../services/state/ricky-morty-slice'; 
+import { RickMortyCard } from './ricky-morty-character-card';
 
 export const RickMortyTable: React.FC = () => {
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [hasNext, setHasNext] = useState(false);
-  const [hasPrev, setHasPrev] = useState(false);
+const dispatch = useDispatch<AppDispatch>();
+const { characters, hasNextPage, hasPreviousPage, loading } = useSelector((state: RootState) => state.rickAndMorty);
 
   useEffect(() => {
-    const sub: Subscription = rickAndMortyService.characters$.subscribe({
-      next: (data: HandleCharactersResponse) => {
-        setCharacters(data.characters);
-        setHasNext(data.hasNextPage);
-        setHasPrev(data.hasPreviousPage);
-        setLoading(false);
-      },
-      error: (err) => console.error(err),
-    });
-
-    return () => sub.unsubscribe();
-  }, []);
+     dispatch(loadCharacters('First Load'));
+  }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
 
   return (
     <div>
       <div style={{ marginBottom: '1rem' }}>
-        <button onClick={() => rickAndMortyService.prevPage()} disabled={!hasPrev}>
+        <button onClick={() => dispatch(prevPage())} disabled={!hasPreviousPage}>
           Prev
         </button>
-        <button onClick={() => rickAndMortyService.nextPage()} disabled={!hasNext}>
+        <button onClick={() => dispatch(nextPage())} disabled={!hasNextPage}>
           Next
         </button>
       </div>

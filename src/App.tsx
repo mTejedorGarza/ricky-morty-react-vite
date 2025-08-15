@@ -4,9 +4,9 @@ import { RickMortyTable } from './components/ricky-morty-table'
 function App() {
 
   return (
-      <div>
-        <RickMortyTable />
-      </div>
+    <div>
+          <RickMortyTable />
+       </div>
   )
 }
 export default App
