@@ -1,7 +1,6 @@
 import { ofType } from 'redux-observable';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { from, of } from 'rxjs';
-import axios from 'axios';
 import { 
   loadCharacters,
   loadCharactersSuccess,
@@ -12,12 +11,15 @@ import {
 import type { APIResponse } from '../types/api-response';
 import type { RootState } from './state/ricky-morty-store';
 import { RICK_MORTY_BASE_URL } from './state/types/ricky-morty-state';
+import { createAxiosClient } from '../interceptor/axios-http-factory';
 
 let nextPageURL = '';
 let prevPageURL = '';
 
+const axiosClient = createAxiosClient(RICK_MORTY_BASE_URL);
+
 const fetchCharacters = (url: string) =>
-  from(axios.get<APIResponse>(url)).pipe(
+  from(axiosClient.get<APIResponse>(url)).pipe(
     map((res) =>{
       nextPageURL = res.data.info.next || '';
       prevPageURL = res.data.info.prev || '';
